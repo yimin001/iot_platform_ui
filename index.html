@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html >
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>iot_platform_ui</title>
+    <script src="https://cdn.staticfile.org/vue/2.4.2/vue.min.js"></script>
+    <script src="https://cdn.staticfile.org/vue-resource/1.5.1/vue-resource.min.js"></script>
+  </head>
+  <body>
+  <div id="vue_det">
+    <h1>site : {{site}}</h1>
+    <h1>url : {{url}}</h1>
+    <h1>{{ details() }}</h1>
+    <button @click="reverseMessage">点击测试</button>
+    <button @click="socketServer">点击连接websocket</button>
+  </div>
+  <script type="text/javascript">
+   var vm = new Vue({
+      el: '#vue_det',
+      data: {
+        site: '测试',
+        url:'localhost:8888'
+      },
+      methods:{
+        details: function () {
+          return this.site + '方法'
+        },
+        reverseMessage: function () {
+         this.url = this.url.split('').reverse().join('');
+         this.$http.post('http://localhost:8888/api/platformLocation/locationServer/add',
+           {serverName:"测试zuul",serverIp:"http://www.runoob.com",serverId:"192.245.23.125",
+             factory:"测试"}
+         , {emulateJSON:true}).then(function (res) {
+           console.log(res);
+         }, function (res) {
+           console.log(res);
+         });
+
+          this.$http.post('http://localhost:8888/api/oauth2/user/registered',
+            {loginName:"admin",password:"123456"}
+            , {emulateJSON:true}).then(function (res) {
+            console.log(res);
+          }, function (res) {
+            console.log(res);
+          });
+        }
+      }
+    });
+
+
+   function socketServer() {
+     var ws = new WebSocket("ws://localhost:9011/websocket/1");
+     ws.onopen = function () {
+       ws.send('WebSocket已连接');
+       console.log("WebSocket已连接");
+     }
+
+     ws.onmessage = function (data) {
+       console.log(data);
+     }
+
+     ws.onclose = function () {
+       console.log('连接已关闭...');
+     }
+   }
+
+  </script>
+    <!--<div id="app"></div>-->
+    <!-- built files will be auto injected -->
+  </body>
+</html>

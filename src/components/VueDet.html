@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html >
+<head>
+    <meta charset="UTF-8">
+    <title>Vue 测试实例</title>
+  <script src="https://cdn.staticfile.org/vue/2.4.2/vue.min.js"></script>
+</head>
+<body>
+<div id="vue_det">
+  <h1>site : {{site}}</h1>
+  <h1>url : {{url}}</h1>
+  <h1>{{details()}}</h1>
+</div>
+<script type="text/javascript">
+var vm = new Vue({
+  el: '#vue_det',
+  data: {
+    site: '测试site',
+    url:'localhost:8080'
+  },
+  method:{
+    details: function () {
+      return this.site + "学习第一款";
+    }
+  }
+})
+</script>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title></title>
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+
+  <script src="https://cdn.staticfile.org/vue/2.4.2/vue.min.js"></script>
+  <script src="https://cdn.staticfile.org/vue-resource/1.5.1/vue-resource.min.js"></script>
+  <![endif]-->
+</head>
+<body >
+<div id="rrapp" v-cloak>
+  <div>
+    <div>航天信息资源管理平台运维系统</div>
+    <div v-if="error">
+      <h4 style="margin-bottom: 0px;"><i class="fa fa-exclamation-circle"></i> {{errorMsg}}</h4>
+    </div>
+    <div class="form-group has-feedback">
+      <input type="text" class="form-control" v-model="loginName" placeholder="账号">
+      <span class="glyphicon glyphicon-user form-control-feedback" style="top: -4px"></span>
+    </div>
+    <div class="form-group has-feedback">
+      <input type="password" class="form-control" v-model="loginPassword" placeholder="密码">
+      <span class="glyphicon glyphicon-lock form-control-feedback" style="top: -4px"></span>
+    </div>
+    <div class="form-group has-feedback">
+      <input type="text" class="form-control" v-model="captcha" @keyup.enter="login" placeholder="验证码">
+      <span class="glyphicon glyphicon-warning-sign form-control-feedback" style="top: -4px"></span>
+    </div>
+    <div class="form-group has-feedback">
+      <img alt="如果看不清楚，请单击图片刷新！" class="pointer" :src="src" @click="refreshCode">
+      &nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:;" @click="refreshCode">点击刷新</a>
+    </div>
+
+    <div class="row">
+      <div>
+        <button type="button" class="btn btn-primary btn-block btn-flat" @click="login">登录</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+<!-- /.login-box -->
+<!--<script src="libs/jquery.min.js"></script>-->
+<!--<script src="plugins/jqgrid/jquery.jqGrid.min.js"></script>-->
+<!--<script src="libs/vue.min.js"></script>-->
+<!--<script src="libs/bootstrap.min.js"></script>-->
+<!--<script src="libs/app.js"></script>-->
+<!--<script src="js/common.js"></script>-->
+<script type="text/javascript">
+  var vm = new Vue({
+    el: '#rrapp',
+    data: {
+      username: '',
+      password: '',
+      captcha: '',
+      error: false,
+      errorMsg: '',
+      src: 'captcha.jpg'
+    },
+    beforeCreate: function () {
+      if (self != top) {
+        top.location.href = self.location.href
+      }
+    },
+    methods: {
+      refreshCode: function () {
+        this.src = 'captcha.jpg?t=' + $.now()
+      },
+      login: function () {
+        var data = 'username=' + vm.username + '&password=' + vm.password + '&captcha=' + vm.captcha
+        $.ajax({
+          type: 'POST',
+          url: baseURL + 'sys/login',
+          data: data,
+          dataType: 'json',
+          success: function (r) {
+            if (r.code == 0) {//登录成功
+              localStorage.setItem('token', r.token)
+              parent.location.href = 'index.html'
+            } else {
+              vm.error = true
+              vm.errorMsg = r.msg
+              vm.refreshCode()
+            }
+          }
+        })
+      }
+    }
+  })
+</script>
+</body>
+</html>
